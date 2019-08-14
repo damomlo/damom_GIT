@@ -1,0 +1,103 @@
+"""
+2048核心算法
+消除类
+"""
+import random
+import copy
+map=[
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
+]
+list_map=[]
+
+
+def get_random_number():
+    global number01, number02
+    number01 = random.randint(0, 3)
+    number02 = random.randint(0, 3)
+
+def show_map():
+    for line in map:
+        print(line)
+    print("---------")
+for i in range(2):
+    get_random_number()
+    if map[number01][number02]==0:
+        map[number01][number02]=2
+list_merge=map[0]
+def detection_map():
+    global list_map
+    for c in range(len(map)):
+        for r in range(len(map[c])):
+            list_map.append(map[c][r])
+def list_element_backward():
+    for i in range(len(list_merge)-1,-1,-1):
+        if list_merge[i]==0:
+            del list_merge[i]
+            list_merge.append(0)
+def merge_element(list_target):
+    list_element_backward()
+    for i in range(len(list_merge)-1):
+        if list_merge[i]==list_merge[i+1]:
+            list_merge[i]*=2
+            del list_merge[i+1]
+            list_merge.append(0)
+def move_left():
+    global list_merge
+    for line in map:
+        list_merge=line
+        merge_element()
+def move_right():
+    global list_merge
+    for line in map:
+        list_merge=line[::-1]
+        merge_element()
+        line[::-1]=list_merge
+def matrix_transpose():
+    for c in range(len(map)-1):
+       for r in range(c+1,len(map[c])):
+           map[c][r],map[r][c]=map[r][c], map[c][r]
+def move_up():
+    matrix_transpose()
+    move_left()
+    matrix_transpose()
+def move_down():
+    matrix_transpose()
+    move_right()
+    matrix_transpose()
+def insert_element():
+    detection_map()
+    random_number = random.randrange(2, 6, 2)
+    while True:
+        get_random_number()
+        if map[number01][number02] == 0 and "8" not in list_map:
+            map[number01][number02] = 2
+            break
+        elif map[number01][number02] == 0 and "8" in list_map:
+            map[number01][number02] = random_number
+            break
+def game_over():
+    global copy_map
+    copy_map=copy.deepcopy(map)
+
+while True:
+    show_map()
+    operation=input("请输入方向：")
+    if operation=="w":
+        move_up()
+        insert_element()
+
+    elif operation=="s":
+        move_down()
+        insert_element()
+
+    elif operation=="a":
+        move_left()
+        insert_element()
+
+    elif operation=="d":
+        move_right()
+        insert_element()
+
